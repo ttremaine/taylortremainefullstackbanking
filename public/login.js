@@ -2,10 +2,21 @@ function Login(){
     const { state, dispatch }     = React.useContext(UserContext);
     const [show, setShow]         = React.useState(true);
     const [status, setStatus]     = React.useState('');
+    const [success, setSuccess] = React.useState('');
     const [name, setName]         = React.useState('');
     const [email, setEmail]       = React.useState('');
     const [password, setPassword] = React.useState('');
-    const [isLogin, setIsLogin]   = React.useState(false);  
+    const [isLogin, setIsLogin]   = React.useState(false);
+    
+    React.useEffect(() => {
+      if(isLogin) {
+         setShow(false);
+         setStatus(state.email + " is logged in");
+      } else {
+        setShow(true);
+      }
+
+    })
 
     function validate(field, label) {
       if (!field) {
@@ -41,20 +52,24 @@ function Login(){
                 const data = JSON.parse(text);
                 setStatus('');
                 setShow(false);
+                setIsLogin(true);
                 console.log('JSON:', data);
+                const loginUser = { 
+                  name: name,
+                  email: email,
+                  password: password,
+                  isLogin: isLogin
+                };
+                dispatch( { type: "LOGIN_USER", payload: { loginUser }});
             } catch(err) {
                 setStatus(text)
+                setShow(true);
+                setPassword('');
                 console.log('err:', text);
             }
         });
 
-      const loginUser = { 
-        name: name,
-        email: email,
-        password: password,
-        isLogin: isLogin
-      };
-      dispatch( { type: "LOGIN_USER", payload: { loginUser }});
+      
      
       setShow(false);
     }    
@@ -63,7 +78,6 @@ function Login(){
       <Card
         bgcolor="primary"
         header="Login"
-        useraccount={email}
         status={status}
         body={show ? (  
                 <>
@@ -75,9 +89,10 @@ function Login(){
                 </>
               ):(
                 <>
-                <h5>Success! You are logged in.</h5>
+                <h5>{success}</h5>
                 </>
               )}
+        useraccount={state.email}
       />
     )
   }

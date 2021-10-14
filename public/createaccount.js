@@ -2,10 +2,21 @@ function CreateAccount(){
     const { state, dispatch } = React.useContext(UserContext);
     const [show, setShow]         = React.useState(true);
     const [status, setStatus]     = React.useState('');
+    const [success, setSuccess]   = React.useState('');
     const [name, setName]         = React.useState('');
     const [email, setEmail]       = React.useState('');
     const [password, setPassword] = React.useState('');
     const [isLogin, setIsLogin]   = React.useState(false);
+
+    React.useEffect(() => {
+      if(isLogin) {
+         setShow(false);
+         setStatus(state.email + " is logged in");
+      } else {
+        setShow(true);
+      }
+
+    })
     
     //Authentication
     function validate(field, label) {
@@ -38,24 +49,24 @@ function CreateAccount(){
       })();
 
       const newUser = { name: name, email: email, password: password, isLogin: isLogin };
-
       dispatch( { type: "CREATE_USER", payload: { newUser } });
-        
+      
+      setSuccess('Success!'); 
+      setIsLogin(true);
       setShow(false);
     }    
   
-    function clearForm() {
+    /*function clearForm() {
       setName('');
       setEmail('');
       setPassword('');
       setShow(true);
-    }
+    }*/
     
     return (
       <Card
         bgcolor="primary"
         header="Create Account"
-        useraccount={state.username}
         status={status}
         body={show ? (  
                 <>
@@ -69,10 +80,10 @@ function CreateAccount(){
                 </>
               ):(
                 <>
-                <h5>Success</h5>
-                <button type="submit" className="btn btn-light" onClick={clearForm}>Add another account</button>
+                <h5>{success}</h5>
                 </>
               )}
+        useraccount={state.email}
       />
     )
   }
