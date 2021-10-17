@@ -2,21 +2,24 @@ function Login(){
     const { state, dispatch }     = React.useContext(UserContext);
     const [show, setShow]         = React.useState(true);
     const [status, setStatus]     = React.useState('');
-    const [success, setSuccess] = React.useState('');
+    const [success, setSuccess]   = React.useState('');
     const [name, setName]         = React.useState('');
     const [email, setEmail]       = React.useState('');
     const [password, setPassword] = React.useState('');
+    const [balance, setBalance]   = React.useState(0);
     const [isLogin, setIsLogin]   = React.useState(false);
-    
+    const [isAuth, setIsAuth]     = React.useState(false);
+
     React.useEffect(() => {
       if(isLogin) {
-         setShow(false);
-         setStatus(state.email + " is logged in");
+        setShow(false);
+        setStatus(state.email + " is logged in");
+        //setBalance(state.balance);
       } else {
+        setEmail('');
         setShow(true);
       }
-
-    })
+    }, []);
 
     function validate(field, label) {
       if (!field) {
@@ -29,16 +32,46 @@ function Login(){
         return true;
     }
 
-    function handleLogout() {
-      if (!validate(email,    'email'))    return;
-      if (!validate(password, 'password')) return;  
-      const logoutUser = {
+
+    function updateState() {
+      const loginUser = { 
         name: name,
         email: email,
         password: password,
+        balance: balance,
+        isLogin: isLogin,
+        isAuth: isAuth
       };
-      dispatch( { type: "LOGOUT_USER", payload: { logoutUser }});
-      setShow(true);
+      console.log('update: ' + balance);
+      dispatch( { type: "LOGIN_USER", payload: { loginUser }});
+    }
+
+    function handleLogout() {
+      fetch(`/account/login/${email}/${password}`)
+        .then(response => response.text())
+        .then(text => {
+            try {
+                const data = JSON.parse(text);
+                setStatus('');
+                setShow(true);
+                setIsLogin(false);
+                setBalance(data.balance);
+                setName('');
+                setEmail('');
+                setPassword('');
+                setBalance(0);
+                setIsAuth(false);
+                console.log('JSON:', data);
+                console.log(data.balance);
+            } catch(err) {
+                setStatus(text)
+                setShow(true);
+                setPassword('');
+                console.log('err:', text);
+            }
+        });
+
+      updateState();
     }
   
     function handleLogin() {
@@ -53,14 +86,9 @@ function Login(){
                 setStatus('');
                 setShow(false);
                 setIsLogin(true);
+                setBalance(data.balance);
                 console.log('JSON:', data);
-                const loginUser = { 
-                  name: name,
-                  email: email,
-                  password: password,
-                  isLogin: isLogin
-                };
-                dispatch( { type: "LOGIN_USER", payload: { loginUser }});
+                console.log(data.balance);
             } catch(err) {
                 setStatus(text)
                 setShow(true);
@@ -69,9 +97,8 @@ function Login(){
             }
         });
 
-      
-     
-      setShow(false);
+      //setShow(false);
+      updateState();
     }    
     
     return (
@@ -89,10 +116,11 @@ function Login(){
                 </>
               ):(
                 <>
-                <h5>{success}</h5>
+                <h5>Current Balance: {balance}</h5>
+                <button type="submit" className="btn btn-light" disabled={!isLogin} onClick={handleLogout}>Logout</button>
                 </>
               )}
-        useraccount={state.email}
+        useraccount={email}
       />
     )
   }

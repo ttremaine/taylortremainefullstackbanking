@@ -7,7 +7,9 @@ function usersReducer(state, action) {
                 name: newUser.name,
                 email: newUser.email,
                 password: newUser.password,
-                isLogin: newUser.isLogin
+                balance: newUser.balance,
+                isLogin: newUser.isLogin,
+                isAuth: newUser.isAuth
             };
         }
         case "LOGIN_USER": {
@@ -17,7 +19,8 @@ function usersReducer(state, action) {
                 email: loginUser.email,
                 password: loginUser.password,
                 balance: loginUser.balance,
-                isLogin: true
+                isLogin: true,
+                isAuth: loginUser.isAuth
             };
         }
         case "LOGOUT_USER": {
@@ -34,7 +37,12 @@ function usersReducer(state, action) {
         case "UPDATE_BALANCE": {
             const userDeposit = action.payload.userDeposit;
             return {
-                balance: userDeposit.balance + userDeposit.amount
+                name: userDeposit.name,
+                email: userDeposit.email,
+                password: userDeposit.password,
+                balance: userDeposit.balance + userDeposit.amount,
+                isLogin: userDeposit.isLogin,
+                isAuth: userDeposit.isAuth
             };
         }
         default:

@@ -6,7 +6,9 @@ function CreateAccount(){
     const [name, setName]         = React.useState('');
     const [email, setEmail]       = React.useState('');
     const [password, setPassword] = React.useState('');
+    const [balance, setBalance]   = React.useState(0);
     const [isLogin, setIsLogin]   = React.useState(false);
+    const [isAuth, setIsAuth]     = React.useState(false);
 
     React.useEffect(() => {
       if(isLogin) {
@@ -33,6 +35,11 @@ function CreateAccount(){
       } else
       return true;
     }
+
+    function updateState() {
+      const newUser = { name: name, email: email, password: password, balance: balance, isLogin: isLogin, isAuth: isAuth };
+      dispatch( { type: "CREATE_USER", payload: { newUser } });
+    }
    
     function handleCreate() {
       if (!validate(name,     'name'))     return;
@@ -48,12 +55,11 @@ function CreateAccount(){
           console.log(data);        
       })();
 
-      const newUser = { name: name, email: email, password: password, isLogin: isLogin };
-      dispatch( { type: "CREATE_USER", payload: { newUser } });
-      
-      setSuccess('Success!'); 
       setIsLogin(true);
+      setSuccess('Success!'); 
       setShow(false);
+
+      updateState();
     }    
   
     /*function clearForm() {

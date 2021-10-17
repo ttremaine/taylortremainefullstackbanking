@@ -6,8 +6,21 @@ function Logout(){
   const [name, setName]         = React.useState('');
   const [email, setEmail]       = React.useState('');
   const [password, setPassword] = React.useState('');
-  const [isLogin, setIsLogin]   = React.useState(false);  
-
+  const [balance, setBalance]   = React.useState(0);
+  const [isLogin, setIsLogin]   = React.useState(false); 
+  const [isAuth, setIsAuth]     = React.useState(false);
+  
+  React.useEffect(() => {
+    if(isLogin) {
+      setShow(false);
+      setStatus(state.email + " is logged in");
+      //setBalance(state.balance);
+    } else {
+      setEmail('');
+      setShow(true);
+    }
+  }, []);
+  
   function validate(field, label) {
     if (!field) {
       setStatus('Error: ' + label);
@@ -19,20 +32,20 @@ function Logout(){
       return true;
   }
 
-  function handleLogout() {
-    if (!validate(email,    'email'))    return;
-    if (!validate(password, 'password')) return;  
-    const logoutUser = {
+  function updateState() {
+    const loginUser = { 
       name: name,
       email: email,
       password: password,
+      balance: balance,
+      isLogin: isLogin,
+      isAuth: isAuth
     };
-    dispatch( { type: "LOGOUT_USER", payload: { logoutUser }});
-    setShow(true);
-    setStatus("You are logged out");
+    console.log('update: ' + balance);
+    dispatch( { type: "LOGIN_USER", payload: { loginUser }});
   }
 
-  function handleLogin() {
+  function handleLogout() {
     if (!validate(email,    'email'))    return;
     if (!validate(password, 'password')) return;
 
@@ -42,23 +55,34 @@ function Logout(){
           try {
               const data = JSON.parse(text);
               setStatus('');
-              setShow(false);
+              setShow(true);
+              setIsLogin(false);
+              setBalance(data.balance);
+              setName('');
+              setEmail('');
+              setPassword('');
+              setBalance(0);
+              setIsAuth(false);
               console.log('JSON:', data);
+              console.log(data.balance);
           } catch(err) {
               setStatus(text)
+              setShow(true);
+              setPassword('');
               console.log('err:', text);
           }
-      });
+    });
 
-    const loginUser = { 
-      name: name,
-      email: email,
-      password: password,
-      isLogin: isLogin
-    };
-    dispatch( { type: "LOGIN_USER", payload: { loginUser }});
+    if(!isLogin) {
+      setShow(false);
+      setStatus(state.email + " is logged out");
+      //setBalance(state.balance);
+    } else {
+      setShow(true);
+    }
    
-    setShow(false);
+    //setShow(false);
+    updateState();
   }    
   
   return (
@@ -76,10 +100,10 @@ function Logout(){
               </>
             ):(
               <>
-              <h5>{success}</h5>
+              <h5>Logged Out</h5>
               </>
             )}
-      useraccount={state.email}
+      useraccount={email}
     />
   )
 }
