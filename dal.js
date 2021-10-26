@@ -1,5 +1,5 @@
 const MongoClient = require('mongodb').MongoClient;
-const url         = 'mongodb://db-mongodb-nyc1-43943-38d4ad2f.mongo.ondigitalocean.com:27017';
+const url         = 'mongodb+srv://db-mongodb-nyc1-43943-38d4ad2f.mongo.ondigitalocean.com:27017';
 let db            = null;
  
 // connect to mongo
