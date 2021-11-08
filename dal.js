@@ -1,4 +1,4 @@
-const MongoClient = require('mongodb').MongoClient;
+/*const MongoClient = require('mongodb').MongoClient;
 const url         = 'mongodb+srv://admin:<kYGq6vU8IPCrQTui>@cluster0.qfhsi.mongodb.net/myproject?retryWrites=true&w=majority';
 let db            = null;
  
@@ -8,13 +8,13 @@ MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, fu
 
     // connect to myproject database
     db = client.db('myproject');
-});
+});*/
 
-/*const MongoClient = require('mongodb').MongoClient;
+const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://admin:<kYGq6vU8IPCrQTui>@cluster0.qfhsi.mongodb.net/myproject?retryWrites=true&w=majority"; 
-const client = new MongoClient(uri, { useNewUrlParser: true }); 
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true }); 
 client.connect(err => { const db = client.db("myproject") }); 
-console.log("Database Connected");*/
+console.log("Database Connected");
 
 /*const MongoClient = require('mongodb').MongoClient;
 const test = require('assert');
